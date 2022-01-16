@@ -4,14 +4,14 @@ import struct
 import statistics
 
 from task.helper import get_data
-from util.util import TcpClient, timestamp
+from util.utils import TcpClient, timestamp
 
 def main():
     model_name = sys.argv[1]
     batch_size = int(sys.argv[2])
     # model_name = 'inception_v3'
     # batch_size = 1
-
+    print(f'model_name: "{model_name} batch_size:{batch_size}')
     # Load image
     data = get_data(model_name, batch_size)
 

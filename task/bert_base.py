@@ -2,7 +2,7 @@ import torch
 
 import task.common as util
 
-from util.util import timestamp
+from util.utils import timestamp
 
 
 def import_model():

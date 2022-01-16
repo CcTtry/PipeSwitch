@@ -6,7 +6,7 @@ import time
 
 from pipeswitch.worker_common import ModelSummary
 from pipeswitch.worker_terminate import WorkerTermThd
-from util.util import timestamp
+from util.utils import timestamp
 
 class WorkerProc(Process):
     def __init__(self, model_list, pipe, param_trans_pipe, term_pipe):

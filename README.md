@@ -6,6 +6,20 @@
 - [3. Brief usage  简要用法](#3-brief-usage--简要用法)
 - [4. Scripts to reproduce figures in our paper. 复现我们论文中的数据的脚本](#4-scripts-to-reproduce-figures-in-our-paper-复现我们论文中的数据的脚本)
 - [5. Contact 联系](#5-contact-联系)
+- [学习过程记录](#学习过程记录)
+  - [路径添加](#路径添加)
+  - [根据端口查询任务](#根据端口查询任务)
+    - [查询对应端口的信息，获取其PID](#查询对应端口的信息获取其pid)
+    - [kill某进程](#kill某进程)
+  - [尝试运行](#尝试运行)
+    - [执行步骤](#执行步骤)
+    - [遇到如下问题](#遇到如下问题)
+      - [问题1](#问题1)
+        - [问题描述](#问题描述)
+        - [解决办法](#解决办法)
+      - [问题2](#问题2)
+        - [问题描述](#问题描述-1)
+        - [解决办法](#解决办法-1)
 
 <!-- /TOC -->
 # 说明
@@ -97,3 +111,71 @@ We use different branches for different points in the figures.These branches are
 If you have any question, please contact `zbai1 at jhu dot edu`
 
 > 如果您有任何问题，请联系“zbai1 at jhu dot edu” 
+
+# 学习过程记录
+## 路径添加
+将以下代码追加到 ```/etc/profile``` 中，并执行```source /etc/profile```，**其中```/home/ctry/gitReg/PipeSwitch```需要更改为本地git 仓库的绝对路径。**
+```
+export  PYTHONPATH=/home/ctry/gitReg/PipeSwitch/:$PYTHONPATH
+export  PYTHONPATH=/home/ctry/gitReg/PipeSwitch/client/:$PYTHONPATH
+export  PYTHONPATH=/home/ctry/gitReg/PipeSwitch/kill_restart/:$PYTHONPATH
+export  PYTHONPATH=/home/ctry/gitReg/PipeSwitch/mps/:$PYTHONPATH
+export  PYTHONPATH=/home/ctry/gitReg/PipeSwitch/pipeswitch/:$PYTHONPATH
+export  PYTHONPATH=/home/ctry/gitReg/PipeSwitch/pytorch_plugin/:$PYTHONPATH
+export  PYTHONPATH=/home/ctry/gitReg/PipeSwitch/ready_model/:$PYTHONPATH
+export  PYTHONPATH=/home/ctry/gitReg/PipeSwitch/scripts/:$PYTHONPATH
+export  PYTHONPATH=/home/ctry/gitReg/PipeSwitch/task/:$PYTHONPATH
+export  PYTHONPATH=/home/ctry/gitReg/PipeSwitch/util/:$PYTHONPATH
+```
+
+## 根据端口查询任务
+遇到某个端口被占用时，可以执行以下命令。
+### 查询对应端口的信息，获取其PID
+```
+netstat -tunpl | grep 端口号
+```
+or 
+```
+lsof -i:端口号
+```
+### kill某进程
+```
+kill -9 PID 
+```
+
+## 尝试运行
+### 执行步骤
+
+> 1. 先执行kill_restart.py 文件，运行如下命令 ```python3.6 kill_restart.py```
+> 2. 再执行client_inference.py文件，运行如下命令
+
+
+```shell
+python3.6 client_inference.py inception_v3 1
+```
+其中，inception_v3、1 分别表示model_name 和 batch_size。
+
+
+### 遇到如下问题
+#### 问题1
+##### 问题描述
+> (base) ctry@Ctry:~/gitReg/PipeSwitch$ python3.6 ./client/client_inference.py inception_v3 1
+Traceback (most recent call last):
+  File "./client/client_inference.py", line 7, in <module>
+    from util.util import TcpClient, timestamp
+ModuleNotFoundError: No module named 'util.util'; 'util' is not a package
+##### 解决办法
+> 将util.py 修改为utils.py即可。（<font color="red">为何能解决未知</font>）
+#### 问题2
+##### 问题描述
+>Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/ctry/gitReg/PipeSwitch/kill_restart/kill_restart.py", line 42, in func_schedule
+    active_worker.kill()
+AttributeError: 'Process' object has no attribute 'kill'
+##### 解决办法
+> 未知，待考究

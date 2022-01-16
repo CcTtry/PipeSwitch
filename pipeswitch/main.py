@@ -7,7 +7,7 @@ import torch.multiprocessing as mp
 from pipeswitch.frontend_tcp import FrontendTcpThd
 from pipeswitch.frontend_schedule import FrontendScheduleThd
 from pipeswitch.worker import WorkerProc
-from util.util import timestamp, TcpAgent, TcpServer
+from util.utils import timestamp, TcpAgent, TcpServer
 
 def main():
     timestamp('frontend', 'start')

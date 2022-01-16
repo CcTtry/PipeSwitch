@@ -7,7 +7,7 @@ import importlib
 import torch
 import torch.multiprocessing as mp
 
-from util.util import TcpServer, TcpAgent, timestamp
+from util.utils import TcpServer, TcpAgent, timestamp
 from mps.train import TrainProc
 from mps.inference import InferProc
 

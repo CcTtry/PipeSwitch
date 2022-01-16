@@ -4,7 +4,7 @@ import struct
 import statistics
 
 from task.helper import get_data
-from util.util import TcpClient, timestamp
+from util.utils import TcpClient, timestamp
 
 def main():
     model_name = sys.argv[1]

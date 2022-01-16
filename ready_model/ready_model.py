@@ -10,7 +10,7 @@ import torch.multiprocessing as mp
 #from experiments.helper import get_model
 from task.helper import get_model
 
-from util.util import TcpServer, TcpAgent, timestamp
+from util.utils import TcpServer, TcpAgent, timestamp
 
 def func_get_request(active_model_name, qout):
     # Listen connections

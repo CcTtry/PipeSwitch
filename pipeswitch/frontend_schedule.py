@@ -2,7 +2,7 @@ import threading
 import torch
 import importlib
 
-from util.util import timestamp
+from util.utils import timestamp
 
 class FrontendScheduleThd(threading.Thread):
     def __init__(self, model_list, qin, worker_list):
