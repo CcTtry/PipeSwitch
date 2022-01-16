@@ -52,10 +52,12 @@ def func_schedule(qin, p_train, p_child):
         p_child.recv()
         #p_train.send('START')
 
-def main():
+def main(name=None):
     # Get model name
-    model_name = sys.argv[1]
-
+    if name is None:
+        model_name = sys.argv[1]
+    else:
+        model_name = name
     # Create worker process
     train_parent, train_child = mp.Pipe()
     p_train = TrainProc(model_name, train_child)
@@ -80,4 +82,6 @@ def main():
 
 if __name__ == '__main__':
     mp.set_start_method('spawn')
-    main()
+    ''' modified by Ctry begin'''
+    main(name='inception_v3')
+    ''' modified by Ctry end'''

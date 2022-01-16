@@ -9,6 +9,8 @@ from util.util import TcpClient, timestamp
 def main():
     model_name = sys.argv[1]
     batch_size = int(sys.argv[2])
+    # model_name = 'inception_v3'
+    # batch_size = 1
 
     # Load image
     data = get_data(model_name, batch_size)
