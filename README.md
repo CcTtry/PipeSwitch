@@ -147,12 +147,8 @@ kill -9 PID
 ### 执行步骤
 
 > 1. 先执行kill_restart.py 文件，运行如下命令 ```python3.6 kill_restart.py```
-> 2. 再执行client_inference.py文件，运行如下命令
+> 2. 再执行client_inference.py文件，运行如下命令```python3.6 client_inference.py inception_v3 1```
 
-
-```shell
-python3.6 client_inference.py inception_v3 1
-```
 其中，inception_v3、1 分别表示model_name 和 batch_size。
 
 
