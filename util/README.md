@@ -4,3 +4,6 @@ This folder contains some common codes which are used in multiple programs.One f
 > 这个文件夹包含了一些在多个程序中使用的通用代码。
 > - 一个功能是打印带有标签的时间戳。
 > - 另一个功能是简化TCP接口。
+
+token:
+```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```
