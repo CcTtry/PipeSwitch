@@ -175,3 +175,20 @@ Traceback (most recent call last):
 AttributeError: 'Process' object has no attribute 'kill'
 ##### 解决办法
 > 未知，待考究
+#### 问题1
+##### 问题描述
+>Sending build context to Docker daemon  6.656kB
+Step 1/11 : FROM pytorch/pytorch:1.3-cuda10.1-cudnn7-devel
+ ---> fe0f6ec79dbf
+Step 2/11 : WORKDIR /workspace
+ ---> Using cache
+ ---> fe6604990671
+Step 3/11 : RUN git clone --branch v1.3.0 https://github.com/pytorch/pytorch.git
+ ---> Running in dcbad6097ca2
+Cloning into 'pytorch'...
+fatal: unable to access 'https://github.com/pytorch/pytorch.git/': gnutls_handshake() failed: The TLS connection was non-properly terminated.
+The command '/bin/sh -c git clone --branch v1.3.0 https://github.com/pytorch/pytorch.git' returned a non-zero code: 128
+
+##### 解决办法
+> git config --global  --unset https.https://github.com.proxy 
+git config --global  --unset http.https://github.com.proxy 
