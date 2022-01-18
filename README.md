@@ -14,12 +14,15 @@
   - [尝试运行](#尝试运行)
     - [执行步骤](#执行步骤)
     - [遇到如下问题](#遇到如下问题)
-      - [问题1](#问题1)
+      - [问题1 执行client_inference.py失败](#问题1-执行client_inferencepy失败)
         - [问题描述](#问题描述)
         - [解决办法](#解决办法)
-      - [问题2](#问题2)
+      - [问题2 执行kill_restart.py失败](#问题2-执行kill_restartpy失败)
         - [问题描述](#问题描述-1)
         - [解决办法](#解决办法-1)
+      - [问题3 构建镜像时，无法git clone的问题](#问题3-构建镜像时无法git-clone的问题)
+        - [问题描述](#问题描述-2)
+        - [解决办法](#解决办法-2)
 
 <!-- /TOC -->
 # 说明
@@ -153,7 +156,7 @@ kill -9 PID
 
 
 ### 遇到如下问题
-#### 问题1
+#### 问题1 执行client_inference.py失败
 ##### 问题描述
 > (base) ctry@Ctry:~/gitReg/PipeSwitch$ python3.6 ./client/client_inference.py inception_v3 1
 Traceback (most recent call last):
@@ -162,7 +165,7 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'util.util'; 'util' is not a package
 ##### 解决办法
 > 将util.py 修改为utils.py即可。（<font color="red">为何能解决未知</font>）
-#### 问题2
+#### 问题2 执行kill_restart.py失败
 ##### 问题描述
 >Exception in thread Thread-2:
 Traceback (most recent call last):
@@ -175,8 +178,10 @@ Traceback (most recent call last):
 AttributeError: 'Process' object has no attribute 'kill'
 ##### 解决办法
 > 未知，待考究
-#### 问题1
+#### 问题3 构建镜像时，无法git clone的问题
+构建镜像时，出现无法git clone的问题，
 ##### 问题描述
+执行```docker build -f Dockerfile-base -t pipeswitch:base .```出现以下错误：
 >Sending build context to Docker daemon  6.656kB
 Step 1/11 : FROM pytorch/pytorch:1.3-cuda10.1-cudnn7-devel
  ---> fe0f6ec79dbf
@@ -190,5 +195,15 @@ fatal: unable to access 'https://github.com/pytorch/pytorch.git/': gnutls_handsh
 The command '/bin/sh -c git clone --branch v1.3.0 https://github.com/pytorch/pytorch.git' returned a non-zero code: 128
 
 ##### 解决办法
-> git config --global  --unset https.https://github.com.proxy 
-git config --global  --unset http.https://github.com.proxy 
+在Dockerfile-base文件中添加git proxy设置。
+```shell
+RUN git config --global http.proxy socks5://地址:端口号
+RUN git config --global https.proxy socks5://地址:端口号
+```
+然后再执行
+```shell
+docker build -f Dockerfile-base -t pipeswitch:base .
+```
+参数说明： 
+  - -f 表示指定生成镜像的Dockerfile
+  - -t 表示目标镜像，:base表示标签
