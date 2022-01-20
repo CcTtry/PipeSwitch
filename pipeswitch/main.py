@@ -13,8 +13,8 @@ def main():
     timestamp('frontend', 'start')
 
     # Load model list
-    model_list_file_name = sys.argv[1]
-    model_list = []
+    model_list_file_name = sys.argv[1]  # 包含多模型名称的文件
+    model_list = []  # 模型列表
     with open(model_list_file_name) as f:
         for line in f.readlines():
             model_list.append(line.strip())

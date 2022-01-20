@@ -19,10 +19,20 @@
         - [解决办法](#解决办法)
       - [问题2 执行kill_restart.py失败](#问题2-执行kill_restartpy失败)
         - [问题描述](#问题描述-1)
-        - [解决办法](#解决办法-1)
+        - [解决办法 【待探究，后续可以在运行的容器中，执行命令，观察结果】](#解决办法-待探究后续可以在运行的容器中执行命令观察结果)
       - [问题3 构建镜像时，无法git clone的问题](#问题3-构建镜像时无法git-clone的问题)
         - [问题描述](#问题描述-2)
+        - [解决办法](#解决办法-1)
+      - [问题4 构建pipeswitch:pipeswitch 镜像时，出现问题](#问题4-构建pipeswitchpipeswitch-镜像时出现问题)
+        - [问题描述](#问题描述-3)
         - [解决办法](#解决办法-2)
+        - [构造 mps镜像](#构造-mps镜像)
+      - [构造ready_model镜像](#构造ready_model镜像)
+      - [清理所有创建失败的镜像](#清理所有创建失败的镜像)
+      - [问题5 如何利用 构建的docker镜像，并运行](#问题5-如何利用-构建的docker镜像并运行)
+        - [执行过程](#执行过程)
+        - [遇到问题](#遇到问题)
+        - [解决办法：](#解决办法-3)
 
 <!-- /TOC -->
 # 说明
@@ -104,8 +114,6 @@ After you have configured the remote server, you need to add its IP address and 
 > - 在基本镜像的基础上，为远程服务器上的不同实验创建不同的docker镜像。
 > - 运行图5-9的实验。
 
-
-
 You could modify the script to adapt to your requirement.For example, you can compile PyTorch and create the basic docker image directly on the remote server.
 We use different branches for different points in the figures.These branches are now in Zhihao's repo, and we will move them to this repo in the future.
 > 您可以修改脚本以适应您的需求。例如，您可以编译PyTorch并直接在远程服务器上创建基本的docker镜像。我们用不同的支点表示图中的不同点。这些分行现在都在Zhihao的repo中，以后我们会把它们移到这个repo中。
@@ -176,7 +184,7 @@ Traceback (most recent call last):
   File "/home/ctry/gitReg/PipeSwitch/kill_restart/kill_restart.py", line 42, in func_schedule
     active_worker.kill()
 AttributeError: 'Process' object has no attribute 'kill'
-##### 解决办法
+##### 解决办法 【待探究，后续可以在运行的容器中，执行命令，观察结果】
 > 未知，待考究
 #### 问题3 构建镜像时，无法git clone的问题
 构建镜像时，出现无法git clone的问题，
@@ -207,3 +215,112 @@ docker build -f Dockerfile-base -t pipeswitch:base .
 参数说明： 
   - -f 表示指定生成镜像的Dockerfile
   - -t 表示目标镜像，:base表示标签
+
+#### 问题4 构建pipeswitch:pipeswitch 镜像时，出现问题
+sudo docker build -f Dockerfile-pipeswitch -t pipeswitch:pipeswitch .
+##### 问题描述
+>Using cache found in /home/ctry/.cache/torch/hub/pytorch_vision_v0.4.2
+Using cache found in /home/ctry/.cache/torch/hub/pytorch_vision_v0.4.2
+Downloading: "https://github.com/huggingface/pytorch-transformers/archive/v2.5.0.zip" to /home/ctry/.cache/torch/hub/v2.5.0.zip
+Traceback (most recent call last):
+  File "../scripts/environment/container_download_models.py", line 8, in <module>
+    main()
+  File "../scripts/environment/container_download_models.py", line 5, in main
+    get_model(model_name)
+  File "/home/ctry/gitReg/PipeSwitch/task/helper.py", line 10, in get_model
+    model = model_module.import_model()
+  File "/home/ctry/gitReg/PipeSwitch/task/bert_base_inference.py", line 24, in import_model
+    model = bert_base.import_model()
+  File "/home/ctry/gitReg/PipeSwitch/task/bert_base.py", line 10, in import_model
+    'bert-base-cased')
+  File "/home/ctry/.local/lib/python3.6/site-packages/torch/hub.py", line 397, in load
+    repo_or_dir = _get_cache_or_reload(repo_or_dir, force_reload, verbose, skip_validation)
+  File "/home/ctry/.local/lib/python3.6/site-packages/torch/hub.py", line 192, in _get_cache_or_reload
+    download_url_to_file(url, cached_file, progress=False)
+  File "/home/ctry/.local/lib/python3.6/site-packages/torch/hub.py", line 452, in download_url_to_file
+    u = urlopen(req)
+  File "/usr/lib/python3.6/urllib/request.py", line 223, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.6/urllib/request.py", line 532, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.6/urllib/request.py", line 642, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.6/urllib/request.py", line 564, in error
+    result = self._call_chain(*args)
+  File "/usr/lib/python3.6/urllib/request.py", line 504, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.6/urllib/request.py", line 756, in http_error_302
+    return self.parent.open(new, timeout=req.timeout)
+  File "/usr/lib/python3.6/urllib/request.py", line 526, in open
+    response = self._open(req, data)
+  File "/usr/lib/python3.6/urllib/request.py", line 544, in _open
+    '_open', req)
+  File "/usr/lib/python3.6/urllib/request.py", line 504, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.6/urllib/request.py", line 1368, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "/usr/lib/python3.6/urllib/request.py", line 1328, in do_open
+    r = h.getresponse()
+  File "/usr/lib/python3.6/http/client.py", line 1377, in getresponse
+    response.begin()
+  File "/usr/lib/python3.6/http/client.py", line 320, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.6/http/client.py", line 289, in _read_status
+    raise RemoteDisconnected("Remote end closed connection without"
+http.client.RemoteDisconnected: Remote end closed connection without response
+
+##### 解决办法 
+在dockfile_pipeswitch中添加git proxy的配置信息，并执行以下命令
+```
+sudo docker build -f Dockerfile-pipeswitch -t pipeswitch:pipeswitch . --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg http_proxy=$HTTP_PROXY --build-arg HTTPS_PROXY=$HTTPS_PROXY --build-arg https_proxy=$HTTPS_PROXY
+```
+
+##### 构造 mps镜像
+执行以下命令
+```
+sudo docker build -f Dockerfile-mps -t pipeswitch:mps . --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg http_proxy=$HTTP_PROXY --build-arg HTTPS_PROXY=$HTTPS_PROXY --build-arg https_proxy=$HTTPS_PROXY
+```
+#### 构造ready_model镜像
+执行以下命令
+```
+sudo docker build -f Dockerfile-ready_model -t pipeswitch:ready_model . --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg http_proxy=$HTTP_PROXY --build-arg HTTPS_PROXY=$HTTPS_PROXY --build-arg https_proxy=$HTTPS_PROXY
+```
+#### 清理所有创建失败的镜像
+```
+sudo docker stop $(sudo docker ps -aq)
+sudo docker rm $(sudo docker ps -aq)
+sudo docker rmi 创建失败的镜像的ID
+```
+#### 问题5 如何利用 构建的docker镜像，并运行
+##### 执行过程
+运行docker容器，使用GPU资源
+```shell
+sudo docker run --gpus all -it --name pipeswitch pipeswitch:pipeswitch
+```
+##### 遇到问题
+>Error response from daemon: could not select device driver "" with capabilities: [[gpu]].
+##### 解决办法：
+按照[博客](https://blog.csdn.net/BigData_Mining/article/details/104991349)的做法，执行安装nvidia-container-runtime，而后执行```systemctl restart docker```重启docker damon进程。
+
+最后执行```sudo docker run --gpus all -it --rm --name pipeswitch pipeswitch:pipeswitch nvidia-smi```验证是否成功
+
+如果成功显示类似如下的命令行界面
+```(base) ctry@Ctry:~/gitReg/PipeSwitch/pipeswitch$ sudo docker run --gpus all -it --rm --name pipeswitch pipeswitch:pipeswitch nvidia-smi
+Thu Jan 20 07:28:19 2022       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 440.33.01    Driver Version: 440.33.01    CUDA Version: 10.2     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 1650    On   | 00000000:01:00.0 Off |                  N/A |
+| N/A   42C    P8     5W /  N/A |    945MiB /  3911MiB |     13%      Default |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|=============================================================================|
++-----------------------------------------------------------------------------+
+
+```

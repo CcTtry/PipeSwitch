@@ -7,6 +7,8 @@ RUN pip install scipy
 RUN pip install transformers==2.5.0
 
 WORKDIR /workspace
+RUN git config --global http.proxy socks5://192.168.1.102:10800
+RUN git config --global https.proxy socks5://192.168.1.102:10800
 RUN git clone --branch dev https://github.com/baizh1994/PipeSwitch.git
 
 ENV PYTHONPATH=/workspace/PipeSwitch
