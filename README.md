@@ -304,7 +304,7 @@ sudo docker run --gpus all -it --name pipeswitch pipeswitch:pipeswitch
 
 最后执行```sudo docker run --gpus all -it --rm --name pipeswitch pipeswitch:pipeswitch nvidia-smi```验证是否成功
 
-如果成功显示类似如下的命令行界面
+如果成功，则显示类似如下的命令行结果
 ```(base) ctry@Ctry:~/gitReg/PipeSwitch/pipeswitch$ sudo docker run --gpus all -it --rm --name pipeswitch pipeswitch:pipeswitch nvidia-smi
 Thu Jan 20 07:28:19 2022       
 +-----------------------------------------------------------------------------+
@@ -322,5 +322,4 @@ Thu Jan 20 07:28:19 2022
 |  GPU       PID   Type   Process name                             Usage      |
 |=============================================================================|
 +-----------------------------------------------------------------------------+
-
 ```
