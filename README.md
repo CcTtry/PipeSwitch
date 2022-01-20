@@ -32,7 +32,7 @@
       - [问题5 如何利用 构建的docker镜像，并运行](#问题5-如何利用-构建的docker镜像并运行)
         - [执行过程](#执行过程)
         - [遇到问题](#遇到问题)
-        - [解决办法：](#解决办法-3)
+        - [解决办法](#解决办法-3)
 
 <!-- /TOC -->
 # 说明
@@ -299,7 +299,7 @@ sudo docker run --gpus all -it --name pipeswitch pipeswitch:pipeswitch
 ```
 ##### 遇到问题
 >Error response from daemon: could not select device driver "" with capabilities: [[gpu]].
-##### 解决办法：
+##### 解决办法
 按照[博客](https://blog.csdn.net/BigData_Mining/article/details/104991349)的做法，执行安装nvidia-container-runtime，而后执行```systemctl restart docker```重启docker damon进程。
 
 最后执行```sudo docker run --gpus all -it --rm --name pipeswitch pipeswitch:pipeswitch nvidia-smi```验证是否成功
