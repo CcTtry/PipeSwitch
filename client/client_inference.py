@@ -7,6 +7,18 @@ from task.helper import get_data
 from util.utils import TcpClient, timestamp
 
 def main():
+    # Ctry modified begin
+    """
+    客户段进程，用于发送任务。
+    1.一共发送100个推理任务，阻塞等待 推理任务的 处理结果。
+    2. 最后打印任务的 【平均处理时延， 处理延迟的标准差】
+    3. 发送单个任务请求一共需发送4次数据，
+        任务名称大小，
+        任务名称，
+        数据大小，
+        数据
+    """
+    # Ctry modified end
     model_name = sys.argv[1]
     batch_size = int(sys.argv[2])
     # model_name = 'inception_v3'
