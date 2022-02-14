@@ -10,7 +10,7 @@ def main():
     # Ctry modified begin
     """
     客户段进程，用于发送任务。
-    1.一共发送100个推理任务，阻塞等待 推理任务的 处理结果。
+    1. 一共发送100个推理任务，阻塞等待 推理任务的 处理结果。(最后发送 struct.pack('I', 0) )
     2. 最后打印任务的 【平均处理时延， 处理延迟的标准差】
     3. 发送单个任务请求一共需发送4次数据，
         任务名称大小，
@@ -79,6 +79,7 @@ def main():
     stable_latency_list = latency_list[10:]
     print ('Latency: %f ms (stdev: %f)' % (statistics.mean(stable_latency_list), 
                                            statistics.stdev(stable_latency_list)))
+
 
 if __name__ == '__main__':
     main()

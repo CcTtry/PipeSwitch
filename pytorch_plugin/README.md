@@ -25,3 +25,131 @@ The code is implemented for NVIDIA V100 and T4, both of which have 16 GB GPU mem
 
 There are some printed message for debug. You can comment them if needed.
 > 有一些用于调试的打印信息。如果需要，可以把他们注释掉
+
+具体修改内容
+1. CUDACachingAllocator.cpp
+该文件主要添加了以下一些方法
+```C++
+/* PipeSwitch: allocate shared GPU memory */
+void allocateSharedCache(void) {
+  caching_allocator.allocateSharedCache();
+}
+
+/* PipeSwitch: send shared GPU memory */
+void sendSharedCache(void) {
+  caching_allocator.sendSharedCache();
+}
+
+/* PipeSwitch: recv shared GPU memory */
+void recvSharedCache(void) {
+  caching_allocator.recvSharedCache();
+}
+
+/* PipeSwitch: insert shared GPU memory to large block pool */
+void insertSharedCache(size_t size, size_t offset) {
+    caching_allocator.insertSharedCache(size, offset);
+}
+
+/* PipeSwitch: clear shared GPU memory */
+void clearSharedCache(void) {
+  caching_allocator.clearSharedCache();
+}
+```
+2. CUDACachingAllocato.h
+该文件，相比于pytorch的原生文件，<font color="red">添加了几个函数的声明</font>
+```C++
+C10_CUDA_API void allocateSharedCache(); // PipeSwitch
+C10_CUDA_API void sendSharedCache(); // PipeSwitch
+C10_CUDA_API void recvSharedCache(); // PipeSwitch
+C10_CUDA_API void insertSharedCache(size_t size, size_t offset); // PipeSwitch
+C10_CUDA_API void clearSharedCache(); // PipeSwitch
+```
+3. pytorch_Module.cpp
+该文件增添了以下几个函数的声明
+```C++
+PyObject * THCPModule_allocateSharedCache(PyObject *_unused, PyObject *noargs)
+{
+  HANDLE_TH_ERRORS
+  c10::cuda::CUDACachingAllocator::allocateSharedCache();
+  END_HANDLE_TH_ERRORS
+  Py_RETURN_NONE;
+}
+
+// PipeSwitch
+PyObject * THCPModule_sendSharedCache(PyObject *_unused, PyObject *noargs)
+{
+  HANDLE_TH_ERRORS
+  c10::cuda::CUDACachingAllocator::sendSharedCache();
+  END_HANDLE_TH_ERRORS
+  Py_RETURN_NONE;
+}
+
+// PipeSwitch
+PyObject * THCPModule_recvSharedCache(PyObject *_unused, PyObject *noargs)
+{
+  HANDLE_TH_ERRORS
+  c10::cuda::CUDACachingAllocator::recvSharedCache();
+  END_HANDLE_TH_ERRORS
+  Py_RETURN_NONE;
+}
+
+// PipeSwitch
+PyObject * THCPModule_insertSharedCacheForParameter(PyObject *_unused, PyObject *noargs)
+{
+  HANDLE_TH_ERRORS
+      c10::cuda::CUDACachingAllocator::insertSharedCache(1UL * 1024UL * 1024UL * 1024UL, 0);
+  END_HANDLE_TH_ERRORS
+  Py_RETURN_NONE;
+}
+
+// PipeSwitch
+PyObject * THCPModule_insertSharedCacheForComputation(PyObject *_unused, PyObject *noargs)
+{
+  HANDLE_TH_ERRORS
+      c10::cuda::CUDACachingAllocator::insertSharedCache(11UL * 1024UL * 1024UL * 1024UL, 1UL * 1024UL * 1024UL * 1024UL);
+  END_HANDLE_TH_ERRORS
+  Py_RETURN_NONE;
+}
+
+// PipeSwitch
+PyObject * THCPModule_clearSharedCache(PyObject *_unused, PyObject *noargs)
+{
+  HANDLE_TH_ERRORS
+  c10::cuda::CUDACachingAllocator::clearSharedCache();
+  END_HANDLE_TH_ERRORS
+  Py_RETURN_NONE;
+}
+```
+4. __init__.py
+该文件对比pytorch 源文件有以下修改:(添加了几个函数)
+```c
+# PipeSwitch
+def allocate_shared_cache():
+    if _initialized:
+        torch._C._cuda_allocateSharedCache()
+
+# PipeSwitch
+def send_shared_cache():
+    if _initialized:
+        torch._C._cuda_sendSharedCache()
+
+# PipeSwitch
+def recv_shared_cache():
+    if _initialized:
+        torch._C._cuda_recvSharedCache()
+
+# PipeSwitch
+def insert_shared_cache_for_parameter():
+    if _initialized:
+        torch._C._cuda_insertSharedCacheForParameter()
+
+# PipeSwitch
+def insert_shared_cache_for_computation():
+    if _initialized:
+        torch._C._cuda_insertSharedCacheForComputation()
+
+# PipeSwitch
+def clear_shared_cache():
+    if _initialized:
+        torch._C._cuda_clearSharedCache()
+```

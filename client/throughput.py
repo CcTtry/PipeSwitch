@@ -32,6 +32,9 @@ def send_request(client, task_name, data):
     timestamp('client', 'after_request_%s' % task_name)
 
 def recv_response(client):
+    '''
+    只接收数据，并解码。不对结果数据进行其他处理
+    '''
     reply_b = client.recv(4)
     reply = reply_b.decode()
     timestamp('client', 'after_reply')
@@ -43,6 +46,10 @@ def close_connection(client):
     timestamp('client', 'close_connection')
 
 def main():
+    '''
+    1. 先执行training 的工作，然后在scheduling_cycle的空隙执行推理任务
+    2. 统计在给定的scheduling_cycle空隙中，执行的任务数量，即吞吐量
+    '''
     model_name = sys.argv[1]
     batch_size = int(sys.argv[2])
     scheduling_cycle = int(sys.argv[3])

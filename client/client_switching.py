@@ -6,6 +6,7 @@ import statistics
 from task.helper import get_data
 from util.utils import TcpClient, timestamp
 
+
 def send_request(client, task_name, data):
     timestamp('client', 'before_request_%s' % task_name)
 
@@ -31,10 +32,12 @@ def send_request(client, task_name, data):
         client.send(data_b)
     timestamp('client', 'after_request_%s' % task_name)
 
+
 def recv_response(client):
     reply_b = client.recv(4)
     reply = reply_b.decode()
     timestamp('client', 'after_reply')
+
 
 def close_connection(client):
     model_name_length = 0
@@ -42,7 +45,20 @@ def close_connection(client):
     client.send(model_name_length_b)
     timestamp('client', 'close_connection')
 
+
 def main():
+    # Ctry modified begin
+    """
+    客户段进程，用于发送任务。
+    1. 一共发送20次 训练和推理任务，阻塞等待
+    2. 最后打印任务的 【平均处理时延（只统计推理延迟）， 处理延迟的标准差】
+    3. 发送单个任务请求一共需发送4次数据，
+        任务名称大小，
+        任务名称，
+        数据大小，
+        数据
+    """
+    # Ctry modified end
     model_name = sys.argv[1]
     batch_size = int(sys.argv[2])
 
@@ -87,6 +103,7 @@ def main():
     print (stable_latency_list)
     print ('Latency: %f ms (stdev: %f)' % (statistics.mean(stable_latency_list), 
                                            statistics.stdev(stable_latency_list)))
+
 
 if __name__ == '__main__':
     main()
